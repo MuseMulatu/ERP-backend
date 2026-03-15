@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     # Third-party packages
     "rest_framework",
     "rest_framework.authtoken",
+    "rest_framework_simplejwt",
     "drf_spectacular",
     "django_filters",
     # ERP apps

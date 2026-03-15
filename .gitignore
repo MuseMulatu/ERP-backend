@@ -1,8 +1,16 @@
-__pycache__/
-*.pyc
+__pycache__ /
+*. pyc
+*. pyo
 .env
-db.sqlite3
-media/
-staticfiles/
-venv/
-erp_env/
+db . sqlite3
+media /
+staticfiles /
+htmlcov /
+. coverage
+*. egg - info /
+dist /
+build /
+venv /
+erp_env /
+. DS_Store
+EOF
