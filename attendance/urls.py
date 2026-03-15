@@ -7,8 +7,7 @@ from .views import AttendanceRecordViewSet
 app_name = "attendance"
 
 router = DefaultRouter()
-router.register(r"records", AttendanceRecordViewSet, basename="attendance-record")
-
+router.register(r"attendance", AttendanceRecordViewSet, basename="attendance-record")
 urlpatterns = [
     path("", include(router.urls)),
 ]

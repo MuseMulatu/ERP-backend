@@ -7,8 +7,8 @@ from .views import LeaveRequestViewSet, LeaveTypeViewSet
 app_name = "leave_management"
 
 router = DefaultRouter()
-router.register(r"types", LeaveTypeViewSet, basename="leave-type")
-router.register(r"requests", LeaveRequestViewSet, basename="leave-request")
+router.register(r"leave-types", LeaveTypeViewSet, basename="leave-type")
+router.register(r"leaves", LeaveRequestViewSet, basename="leave-request")
 
 urlpatterns = [
     path("", include(router.urls)),

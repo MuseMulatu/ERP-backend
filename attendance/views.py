@@ -1,8 +1,9 @@
-# attendance/views.py
-
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils import timezone
 from .models import AttendanceRecord
 from .serializers import AttendanceRecordSerializer
 from hr.models import Employee
@@ -43,3 +44,36 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
 
         employee = self.request.user.employee_profile
         serializer.save(employee=employee, ip_address=ip)
+
+    @action(detail=False, methods=["post"], url_path="check-in")
+    def check_in(self, request):
+        employee = request.user.employee_profile
+        today = timezone.now().date()
+
+        # no check in twice in one day
+        if AttendanceRecord.objects.filter(employee=employee, date=today).exists():
+            return Response(
+                {"error": "Already checked in today."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        record = AttendanceRecord.objects.create(
+            employee=employee, date=today, check_in=timezone.now()
+        )
+        return Response({"status": "Checked in"}, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=["post"], url_path="check-out")
+    def check_out(self, request):
+        employee = request.user.employee_profile
+        today = timezone.now().date()
+        record = AttendanceRecord.objects.filter(employee=employee, date=today).first()
+
+        if record and not record.check_out:
+            record.check_out = timezone.now()
+            record.save()
+            return Response({"status": "Checked out"}, status=status.HTTP_200_OK)
+
+        return Response(
+            {"error": "Cannot check out. No active check-in found."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
